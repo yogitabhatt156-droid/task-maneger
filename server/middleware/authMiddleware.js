@@ -29,7 +29,7 @@ const requireAuth = async (req, res, next) => {
         req.user = {
           id: '00000000-0000-0000-0000-000000000001',
           email: 'demo@taskflow.app',
-          user_metadata: { full_name: 'Demo User' },
+          user_metadata: { full_name: 'Yogita Bhatt' },
         };
         req.supabase = null;
         req.isDemo = true;

@@ -60,8 +60,8 @@ app.get('/api/profile', requireAuth, async (req, res, next) => {
         data: {
           id: req.user.id,
           email: req.user.email,
-          full_name: 'Demo Workspace',
-          avatar_url: 'https://api.dicebear.com/7.x/initials/svg?seed=DemoUser',
+          full_name: 'Yogita Bhatt',
+          avatar_url: 'https://api.dicebear.com/7.x/initials/svg?seed=Yogita%20Bhatt',
         },
       });
     }

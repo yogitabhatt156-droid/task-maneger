@@ -81,6 +81,10 @@ async function getCurrentUser() {
     try {
       const parsed = JSON.parse(localSession);
       if (parsed.isDemo) {
+        if (parsed.user && parsed.user.full_name !== 'Yogita Bhatt') {
+          parsed.user.full_name = 'Yogita Bhatt';
+          localStorage.setItem(AUTH_STORAGE_KEY, JSON.stringify(parsed));
+        }
         return parsed.user;
       }
     } catch (e) {}
@@ -199,7 +203,7 @@ async function signInDemo() {
     user: {
       id: '00000000-0000-0000-0000-000000000001',
       email: 'demo@taskflow.app',
-      full_name: 'Alex Morgan (Demo)',
+      full_name: 'Yogita Bhatt',
     },
     isDemo: true,
   };
