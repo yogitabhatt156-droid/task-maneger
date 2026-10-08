@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Categories — TaskFlow</title>
+  <meta name="description" content="Organize tasks into customizable domains and workflows using TaskFlow Categories.">
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/dashboard.css">
+  <link rel="stylesheet" href="/css/responsive.css">
+</head>
+<body>
+  <div class="app-shell">
+    <!-- Sidebar Navigation -->
+    <aside class="app-sidebar">
+      <div class="sidebar-header">
+        <div class="brand-icon">TF</div>
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+          <span class="brand-name">TaskFlow</span>
+          <span class="brand-badge">PRO</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="nav-label">Workspace</div>
+        <a href="/dashboard.html" class="nav-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="7" height="7"></rect>
+            <rect x="14" y="3" width="7" height="7"></rect>
+            <rect x="14" y="14" width="7" height="7"></rect>
+            <rect x="3" y="14" width="7" height="7"></rect>
+          </svg>
+          Dashboard
+        </a>
+        <a href="/tasks.html" class="nav-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 11l3 3L22 4"></path>
+            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+          </svg>
+          Tasks
+        </a>
+        <a href="/categories.html" class="nav-item active">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
+            <line x1="7" y1="7" x2="7.01" y2="7"></line>
+          </svg>
+          Categories
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="user-profile-badge">
+          <img class="user-avatar" src="https://api.dicebear.com/7.x/initials/svg?seed=TF" alt="Avatar">
+          <div class="user-info">
+            <div class="user-name">Loading user...</div>
+            <div class="user-email">...</div>
+          </div>
+        </div>
+
+        <div class="sidebar-actions">
+          <button id="themeToggleBtn" class="theme-toggle-btn" title="Toggle Light/Dark Theme" aria-label="Toggle Light/Dark Theme"></button>
+          <button id="logoutBtn" class="btn btn-secondary btn-sm" style="flex: 1;">
+            Sign Out
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content Shell -->
+    <div class="app-main">
+      <header class="app-header">
+        <div class="header-left">
+          <button id="mobileMenuBtn" class="mobile-menu-toggle" aria-label="Open Navigation">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="3" y1="12" x2="21" y2="12"></line>
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+          </button>
+          <h1 class="page-title">Categories Organization</h1>
+        </div>
+
+        <div class="header-right">
+          <button class="btn btn-primary btn-sm" onclick="openCreateCategoryModal()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            Create Category
+          </button>
+        </div>
+      </header>
+
+      <main class="content-container">
+        <div style="margin-bottom: 1.5rem;">
+          <p style="font-size: 0.95rem;">Group tasks by project, personal milestones, or departments to maintain structured productivity.</p>
+        </div>
+
+        <!-- Categories Cards Grid -->
+        <div id="categoriesGrid" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 1.25rem;">
+          <!-- Dynamically populated categories -->
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Create/Edit Category Modal -->
+  <div class="modal-overlay" id="categoryModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="categoryModalTitle">Create Category</h3>
+        <button type="button" class="modal-close-btn" onclick="closeModal('categoryModal')">&times;</button>
+      </div>
+
+      <form id="categoryForm">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label" for="categoryName">Category Name <span class="required">*</span></label>
+            <input type="text" id="categoryName" class="form-control" placeholder="e.g. Work, Health, Travel" required />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="categoryColor">Color Accent</label>
+            <div style="display: flex; gap: 0.75rem; align-items: center;">
+              <input type="color" id="categoryColor" value="#4f46e5" style="width: 48px; height: 38px; border-radius: var(--radius-sm); border: 1px solid var(--border-subtle); cursor: pointer;" />
+              <div style="display: flex; gap: 0.35rem; flex-wrap: wrap;">
+                <button type="button" class="color-preset-btn" data-color="#4f46e5" style="width: 24px; height: 24px; border-radius: 50%; background: #4f46e5; border: none; cursor: pointer;"></button>
+                <button type="button" class="color-preset-btn" data-color="#06b6d4" style="width: 24px; height: 24px; border-radius: 50%; background: #06b6d4; border: none; cursor: pointer;"></button>
+                <button type="button" class="color-preset-btn" data-color="#8b5cf6" style="width: 24px; height: 24px; border-radius: 50%; background: #8b5cf6; border: none; cursor: pointer;"></button>
+                <button type="button" class="color-preset-btn" data-color="#ec4899" style="width: 24px; height: 24px; border-radius: 50%; background: #ec4899; border: none; cursor: pointer;"></button>
+                <button type="button" class="color-preset-btn" data-color="#10b981" style="width: 24px; height: 24px; border-radius: 50%; background: #10b981; border: none; cursor: pointer;"></button>
+                <button type="button" class="color-preset-btn" data-color="#f59e0b" style="width: 24px; height: 24px; border-radius: 50%; background: #f59e0b; border: none; cursor: pointer;"></button>
+                <button type="button" class="color-preset-btn" data-color="#64748b" style="width: 24px; height: 24px; border-radius: 50%; background: #64748b; border: none; cursor: pointer;"></button>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('categoryModal')">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Category</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="/js/utils.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/api.js"></script>
+  <script src="/js/categories.js"></script>
+</body>
+</html>

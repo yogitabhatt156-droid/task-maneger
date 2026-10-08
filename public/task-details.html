@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Task Details — TaskFlow</title>
+  <meta name="description" content="Detailed task overview with timeline, priority, categories, and tags in TaskFlow.">
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/dashboard.css">
+  <link rel="stylesheet" href="/css/responsive.css">
+</head>
+<body>
+  <div class="app-shell">
+    <aside class="app-sidebar">
+      <div class="sidebar-header">
+        <div class="brand-icon">TF</div>
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+          <span class="brand-name">TaskFlow</span>
+          <span class="brand-badge">PRO</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="nav-label">Workspace</div>
+        <a href="/dashboard.html" class="nav-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="7" height="7"></rect>
+            <rect x="14" y="3" width="7" height="7"></rect>
+            <rect x="14" y="14" width="7" height="7"></rect>
+            <rect x="3" y="14" width="7" height="7"></rect>
+          </svg>
+          Dashboard
+        </a>
+        <a href="/tasks.html" class="nav-item active">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 11l3 3L22 4"></path>
+            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+          </svg>
+          Tasks
+        </a>
+        <a href="/categories.html" class="nav-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
+            <line x1="7" y1="7" x2="7.01" y2="7"></line>
+          </svg>
+          Categories
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="user-profile-badge">
+          <img class="user-avatar" src="https://api.dicebear.com/7.x/initials/svg?seed=TF" alt="Avatar">
+          <div class="user-info">
+            <div class="user-name">Loading user...</div>
+            <div class="user-email">...</div>
+          </div>
+        </div>
+
+        <div class="sidebar-actions">
+          <button id="themeToggleBtn" class="theme-toggle-btn" title="Toggle Light/Dark Theme" aria-label="Toggle Light/Dark Theme"></button>
+          <button id="logoutBtn" class="btn btn-secondary btn-sm" style="flex: 1;">
+            Sign Out
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <div class="app-main">
+      <header class="app-header">
+        <div class="header-left">
+          <button id="mobileMenuBtn" class="mobile-menu-toggle" aria-label="Open Navigation">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="3" y1="12" x2="21" y2="12"></line>
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+          </button>
+          <a href="/tasks.html" class="btn btn-ghost btn-sm" style="margin-right: 0.5rem;">&larr; Back to Tasks</a>
+          <h1 class="page-title" id="pageTaskTitle">Task Details</h1>
+        </div>
+
+        <div class="header-right">
+          <button id="pageDeleteBtn" class="btn btn-danger btn-sm">Delete Task</button>
+        </div>
+      </header>
+
+      <main class="content-container">
+        <div class="card-panel" style="max-width: 800px; margin: 0 auto;">
+          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 1.5rem;">
+            <div style="display: flex; align-items: center; gap: 0.75rem;">
+              <span id="taskStatusBadge" class="badge"></span>
+              <span id="taskPriorityBadge" class="badge"></span>
+              <span id="taskCategoryBadge"></span>
+            </div>
+          </div>
+
+          <h2 id="taskMainTitle" style="font-size: 1.5rem; margin-bottom: 1rem;"></h2>
+          <div style="font-size: 0.95rem; line-height: 1.6; color: var(--text-muted); margin-bottom: 2rem; white-space: pre-wrap;" id="taskMainDescription"></div>
+
+          <div style="border-top: 1px solid var(--border-subtle); padding-top: 1.5rem; margin-bottom: 1.5rem;">
+            <h4 style="font-size: 0.825rem; text-transform: uppercase; color: var(--text-subtle); margin-bottom: 0.5rem;">Associated Tags</h4>
+            <div id="taskMainTags" style="display: flex; flex-wrap: wrap; gap: 0.5rem;"></div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1.25rem; border-top: 1px solid var(--border-subtle); padding-top: 1.5rem;">
+            <div>
+              <span style="font-size: 0.75rem; color: var(--text-subtle); text-transform: uppercase; font-weight: 700;">Due Date</span>
+              <div id="taskMainDueDate" style="font-size: 0.95rem; font-weight: 600; margin-top: 0.25rem;">-</div>
+            </div>
+            <div>
+              <span style="font-size: 0.75rem; color: var(--text-subtle); text-transform: uppercase; font-weight: 700;">Created At</span>
+              <div id="taskMainCreatedAt" style="font-size: 0.95rem; font-weight: 600; margin-top: 0.25rem;">-</div>
+            </div>
+            <div>
+              <span style="font-size: 0.75rem; color: var(--text-subtle); text-transform: uppercase; font-weight: 700;">Completed At</span>
+              <div id="taskMainCompletedAt" style="font-size: 0.95rem; font-weight: 600; margin-top: 0.25rem;">-</div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="/js/utils.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/api.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      const isAuthed = await requireAuth();
+      if (!isAuthed) return;
+
+      const params = new URLSearchParams(window.location.search);
+      const taskId = params.get('id');
+
+      if (!taskId) {
+        window.location.href = '/tasks.html';
+        return;
+      }
+
+      try {
+        const res = await api.tasks.getById(taskId);
+        if (!res.success) throw new Error('Task not found');
+        const task = res.data;
+
+        document.getElementById('pageTaskTitle').innerText = task.title;
+        document.getElementById('taskMainTitle').innerText = task.title;
+        document.getElementById('taskMainDescription').innerText = task.description || 'No description provided.';
+
+        const statusBadge = document.getElementById('taskStatusBadge');
+        statusBadge.className = `badge badge-status-${task.status.toLowerCase().replace(' ', '')}`;
+        statusBadge.innerHTML = `<span class="badge-dot"></span>${task.status}`;
+
+        const prioBadge = document.getElementById('taskPriorityBadge');
+        prioBadge.className = `badge badge-prio-${task.priority.toLowerCase()}`;
+        prioBadge.innerText = task.priority;
+
+        if (task.category) {
+          document.getElementById('taskCategoryBadge').innerHTML = `
+            <span class="badge badge-category" style="border-left: 3px solid ${task.category.color || '#4f46e5'}">
+              ${escapeHtml(task.category.name)}
+            </span>
+          `;
+        }
+
+        const tagsContainer = document.getElementById('taskMainTags');
+        if (task.tags && task.tags.length > 0) {
+          tagsContainer.innerHTML = task.tags.map(t => `<span class="tag-chip">#${escapeHtml(t)}</span>`).join('');
+        } else {
+          tagsContainer.innerHTML = '<span class="text-subtle" style="font-size: 0.85rem;">No tags assigned</span>';
+        }
+
+        const rel = formatRelativeDate(task.due_date);
+        document.getElementById('taskMainDueDate').innerText = rel.text;
+        document.getElementById('taskMainCreatedAt').innerText = formatDate(task.created_at);
+        document.getElementById('taskMainCompletedAt').innerText = task.completed_at ? formatDate(task.completed_at) : 'Not completed';
+
+        document.getElementById('pageDeleteBtn').onclick = () => {
+          showConfirmDialog({
+            title: 'Delete Task',
+            message: `Are you sure you want to permanently delete "${task.title}"?`,
+            confirmText: 'Delete',
+            onConfirm: async () => {
+              await api.tasks.delete(task.id);
+              showToast('Task deleted successfully', 'success');
+              setTimeout(() => {
+                window.location.href = '/tasks.html';
+              }, 400);
+            }
+          });
+        };
+      } catch (err) {
+        showToast(err.message || 'Failed to load task', 'error');
+        setTimeout(() => { window.location.href = '/tasks.html'; }, 1500);
+      }
+    });
+  </script>
+</body>
+</html>

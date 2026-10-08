@@ -1,0 +1,323 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard Overview — TaskFlow</title>
+  <meta name="description" content="View real-time productivity statistics, today's schedule, and upcoming tasks in TaskFlow.">
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/dashboard.css">
+  <link rel="stylesheet" href="/css/responsive.css">
+</head>
+<body>
+  <div class="app-shell">
+    <!-- Sidebar Navigation -->
+    <aside class="app-sidebar">
+      <div class="sidebar-header">
+        <div class="brand-icon">TF</div>
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+          <span class="brand-name">TaskFlow</span>
+          <span class="brand-badge">PRO</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="nav-label">Workspace</div>
+        <a href="/dashboard.html" class="nav-item active">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="7" height="7"></rect>
+            <rect x="14" y="3" width="7" height="7"></rect>
+            <rect x="14" y="14" width="7" height="7"></rect>
+            <rect x="3" y="14" width="7" height="7"></rect>
+          </svg>
+          Dashboard
+        </a>
+        <a href="/tasks.html" class="nav-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 11l3 3L22 4"></path>
+            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+          </svg>
+          Tasks
+        </a>
+        <a href="/categories.html" class="nav-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
+            <line x1="7" y1="7" x2="7.01" y2="7"></line>
+          </svg>
+          Categories
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="user-profile-badge">
+          <img class="user-avatar" src="https://api.dicebear.com/7.x/initials/svg?seed=TF" alt="Avatar">
+          <div class="user-info">
+            <div class="user-name">Loading user...</div>
+            <div class="user-email">...</div>
+          </div>
+        </div>
+
+        <div class="sidebar-actions">
+          <button id="themeToggleBtn" class="theme-toggle-btn" title="Toggle Light/Dark Theme" aria-label="Toggle Light/Dark Theme"></button>
+          <button id="logoutBtn" class="btn btn-secondary btn-sm" style="flex: 1;">
+            Sign Out
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content Shell -->
+    <div class="app-main">
+      <header class="app-header">
+        <div class="header-left">
+          <button id="mobileMenuBtn" class="mobile-menu-toggle" aria-label="Open Navigation">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="3" y1="12" x2="21" y2="12"></line>
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+          </button>
+          <h1 class="page-title">Dashboard Overview</h1>
+        </div>
+
+        <div class="header-right">
+          <button class="btn btn-primary btn-sm" onclick="openNewTaskModal()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            New Task
+          </button>
+        </div>
+      </header>
+
+      <main class="content-container">
+        <!-- 6 Metrics Cards -->
+        <div class="metrics-grid">
+          <div class="metric-card">
+            <div class="metric-card-content">
+              <span class="metric-label">Total Tasks</span>
+              <span class="metric-value" id="statTotal">-</span>
+              <span class="metric-subtext">All assigned</span>
+            </div>
+            <div class="metric-icon-box metric-icon-total">📁</div>
+          </div>
+
+          <div class="metric-card">
+            <div class="metric-card-content">
+              <span class="metric-label">Pending (Todo)</span>
+              <span class="metric-value" id="statPending">-</span>
+              <span class="metric-subtext">Waiting to start</span>
+            </div>
+            <div class="metric-icon-box metric-icon-pending">⏳</div>
+          </div>
+
+          <div class="metric-card">
+            <div class="metric-card-content">
+              <span class="metric-label">In Progress</span>
+              <span class="metric-value" id="statInProgress">-</span>
+              <span class="metric-subtext">Currently active</span>
+            </div>
+            <div class="metric-icon-box metric-icon-progress">⚡</div>
+          </div>
+
+          <div class="metric-card">
+            <div class="metric-card-content">
+              <span class="metric-label">Completed</span>
+              <span class="metric-value" id="statCompleted">-</span>
+              <span class="metric-subtext">Done & closed</span>
+            </div>
+            <div class="metric-icon-box metric-icon-completed">✓</div>
+          </div>
+
+          <div class="metric-card">
+            <div class="metric-card-content">
+              <span class="metric-label">Overdue</span>
+              <span class="metric-value" id="statOverdue" style="color: #ef4444;">-</span>
+              <span class="metric-subtext">Past due date</span>
+            </div>
+            <div class="metric-icon-box metric-icon-overdue">⚠️</div>
+          </div>
+
+          <div class="metric-card">
+            <div class="metric-card-content">
+              <span class="metric-label">Due Today</span>
+              <span class="metric-value" id="statDueToday" style="color: #ca8a04;">-</span>
+              <span class="metric-subtext">Action needed</span>
+            </div>
+            <div class="metric-icon-box metric-icon-today">📅</div>
+          </div>
+        </div>
+
+        <!-- Visual Analytics Section -->
+        <div class="analytics-section">
+          <!-- Overall Completion Progress -->
+          <div class="card-panel">
+            <div class="panel-header">
+              <h2 class="panel-title">Task Completion Rate</h2>
+              <span style="font-size: 0.8125rem; color: var(--text-muted);">Overall Velocity</span>
+            </div>
+
+            <div class="progress-container">
+              <div class="progress-header">
+                <span style="font-size: 0.875rem; color: var(--text-muted);">Progress toward goals</span>
+                <span class="progress-percentage" id="completionRateText">0%</span>
+              </div>
+              <div class="progress-track">
+                <div class="progress-fill" id="completionProgressBar" style="width: 0%;"></div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Priority Distribution Bar Chart -->
+          <div class="card-panel">
+            <div class="panel-header">
+              <h2 class="panel-title">Priority Distribution</h2>
+            </div>
+
+            <div class="priority-breakdown-list">
+              <div class="priority-row">
+                <div class="priority-meta">
+                  <span class="badge badge-prio-urgent">Urgent</span>
+                </div>
+                <div class="priority-bar-wrap">
+                  <div class="priority-bar-fill" id="prioBar_Urgent" style="width: 0%; background: #e11d48;"></div>
+                </div>
+                <span class="priority-count" id="prioCount_Urgent">0</span>
+              </div>
+
+              <div class="priority-row">
+                <div class="priority-meta">
+                  <span class="badge badge-prio-high">High</span>
+                </div>
+                <div class="priority-bar-wrap">
+                  <div class="priority-bar-fill" id="prioBar_High" style="width: 0%; background: #ea580c;"></div>
+                </div>
+                <span class="priority-count" id="prioCount_High">0</span>
+              </div>
+
+              <div class="priority-row">
+                <div class="priority-meta">
+                  <span class="badge badge-prio-medium">Medium</span>
+                </div>
+                <div class="priority-bar-wrap">
+                  <div class="priority-bar-fill" id="prioBar_Medium" style="width: 0%; background: #ca8a04;"></div>
+                </div>
+                <span class="priority-count" id="prioCount_Medium">0</span>
+              </div>
+
+              <div class="priority-row">
+                <div class="priority-meta">
+                  <span class="badge badge-prio-low">Low</span>
+                </div>
+                <div class="priority-bar-wrap">
+                  <div class="priority-bar-fill" id="prioBar_Low" style="width: 0%; background: #16a34a;"></div>
+                </div>
+                <span class="priority-count" id="prioCount_Low">0</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Today's Tasks & Upcoming Tasks -->
+        <div class="dashboard-tasks-grid">
+          <div class="card-panel">
+            <div class="panel-header">
+              <h2 class="panel-title">Today's Tasks</h2>
+              <a href="/tasks.html?filter=today" style="font-size: 0.8125rem; font-weight: 600;">View all</a>
+            </div>
+            <div id="todaysTasksList">
+              <div class="skeleton" style="height: 120px;"></div>
+            </div>
+          </div>
+
+          <div class="card-panel">
+            <div class="panel-header">
+              <h2 class="panel-title">Upcoming Deadlines</h2>
+              <a href="/tasks.html?filter=upcoming" style="font-size: 0.8125rem; font-weight: 600;">View all</a>
+            </div>
+            <div id="upcomingTasksList">
+              <div class="skeleton" style="height: 120px;"></div>
+            </div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Quick Task Modal -->
+  <div class="modal-overlay" id="taskModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="modalTitle">Create New Task</h3>
+        <button type="button" class="modal-close-btn" onclick="closeModal('taskModal')">&times;</button>
+      </div>
+      <form id="quickTaskForm">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label" for="taskTitleInput">Task Title <span class="required">*</span></label>
+            <input type="text" id="taskTitleInput" class="form-control" placeholder="e.g. Prepare Quarter Financial Summary" required />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="taskDescInput">Description</label>
+            <textarea id="taskDescInput" class="form-control" placeholder="Outline specific action items or links..."></textarea>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label class="form-label" for="taskStatusSelect">Status</label>
+              <select id="taskStatusSelect" class="form-control">
+                <option value="Todo" selected>Todo</option>
+                <option value="In Progress">In Progress</option>
+                <option value="Completed">Completed</option>
+                <option value="Cancelled">Cancelled</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="taskPrioritySelect">Priority</label>
+              <select id="taskPrioritySelect" class="form-control">
+                <option value="Low">Low</option>
+                <option value="Medium" selected>Medium</option>
+                <option value="High">High</option>
+                <option value="Urgent">Urgent</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label class="form-label" for="taskCategorySelect">Category</label>
+              <select id="taskCategorySelect" class="form-control">
+                <option value="">No Category</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="taskDueDateInput">Due Date</label>
+              <input type="date" id="taskDueDateInput" class="form-control" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="taskTagsInput">Tags (comma-separated)</label>
+            <input type="text" id="taskTagsInput" class="form-control" placeholder="Marketing, Q4, Important" />
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('taskModal')">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Task</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="/js/utils.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/api.js"></script>
+  <script src="/js/dashboard.js"></script>
+</body>
+</html>

@@ -1,0 +1,309 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Tasks Management — TaskFlow</title>
+  <meta name="description" content="Manage, filter, search, and organize all your tasks with precision in TaskFlow.">
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/dashboard.css">
+  <link rel="stylesheet" href="/css/responsive.css">
+</head>
+<body>
+  <div class="app-shell">
+    <!-- Sidebar Navigation -->
+    <aside class="app-sidebar">
+      <div class="sidebar-header">
+        <div class="brand-icon">TF</div>
+        <div style="display: flex; align-items: center; gap: 0.5rem;">
+          <span class="brand-name">TaskFlow</span>
+          <span class="brand-badge">PRO</span>
+        </div>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="nav-label">Workspace</div>
+        <a href="/dashboard.html" class="nav-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="3" y="3" width="7" height="7"></rect>
+            <rect x="14" y="3" width="7" height="7"></rect>
+            <rect x="14" y="14" width="7" height="7"></rect>
+            <rect x="3" y="14" width="7" height="7"></rect>
+          </svg>
+          Dashboard
+        </a>
+        <a href="/tasks.html" class="nav-item active">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M9 11l3 3L22 4"></path>
+            <path d="M21 12v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11"></path>
+          </svg>
+          Tasks
+        </a>
+        <a href="/categories.html" class="nav-item">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
+            <line x1="7" y1="7" x2="7.01" y2="7"></line>
+          </svg>
+          Categories
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <div class="user-profile-badge">
+          <img class="user-avatar" src="https://api.dicebear.com/7.x/initials/svg?seed=TF" alt="Avatar">
+          <div class="user-info">
+            <div class="user-name">Loading user...</div>
+            <div class="user-email">...</div>
+          </div>
+        </div>
+
+        <div class="sidebar-actions">
+          <button id="themeToggleBtn" class="theme-toggle-btn" title="Toggle Light/Dark Theme" aria-label="Toggle Light/Dark Theme"></button>
+          <button id="logoutBtn" class="btn btn-secondary btn-sm" style="flex: 1;">
+            Sign Out
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    <!-- Main Content Shell -->
+    <div class="app-main">
+      <header class="app-header">
+        <div class="header-left">
+          <button id="mobileMenuBtn" class="mobile-menu-toggle" aria-label="Open Navigation">
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="3" y1="12" x2="21" y2="12"></line>
+              <line x1="3" y1="6" x2="21" y2="6"></line>
+              <line x1="3" y1="18" x2="21" y2="18"></line>
+            </svg>
+          </button>
+          <h1 class="page-title">Task Management</h1>
+          <span class="badge" id="taskCountBadge" style="background: var(--bg-surface-alt); color: var(--text-muted); font-size: 0.8rem;">0 tasks</span>
+        </div>
+
+        <div class="header-right">
+          <div style="display: flex; gap: 0.25rem;">
+            <button id="viewGridBtn" class="btn btn-primary btn-icon btn-sm" title="Grid View" onclick="setView('grid')">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="3" y="3" width="7" height="7"></rect>
+                <rect x="14" y="3" width="7" height="7"></rect>
+                <rect x="14" y="14" width="7" height="7"></rect>
+                <rect x="3" y="14" width="7" height="7"></rect>
+              </svg>
+            </button>
+            <button id="viewTableBtn" class="btn btn-secondary btn-icon btn-sm" title="Table View" onclick="setView('table')">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="8" y1="6" x2="21" y2="6"></line>
+                <line x1="8" y1="12" x2="21" y2="12"></line>
+                <line x1="8" y1="18" x2="21" y2="18"></line>
+                <line x1="3" y1="6" x2="3.01" y2="6"></line>
+                <line x1="3" y1="12" x2="3.01" y2="12"></line>
+                <line x1="3" y1="18" x2="3.01" y2="18"></line>
+              </svg>
+            </button>
+          </div>
+
+          <button class="btn btn-primary btn-sm" onclick="openCreateTaskModal()">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <line x1="12" y1="5" x2="12" y2="19"></line>
+              <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            Create Task
+          </button>
+        </div>
+      </header>
+
+      <main class="content-container">
+        <!-- Filter Toolbar -->
+        <div class="filter-toolbar">
+          <div class="search-input-box">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <input
+              type="text"
+              id="searchTasks"
+              class="form-control"
+              placeholder="Search by title, description, or #tag..."
+            />
+          </div>
+
+          <select id="filterStatus" class="form-control filter-select">
+            <option value="all">All Statuses</option>
+            <option value="Todo">Todo</option>
+            <option value="In Progress">In Progress</option>
+            <option value="Completed">Completed</option>
+            <option value="Cancelled">Cancelled</option>
+          </select>
+
+          <select id="filterPriority" class="form-control filter-select">
+            <option value="all">All Priorities</option>
+            <option value="Low">Low</option>
+            <option value="Medium">Medium</option>
+            <option value="High">High</option>
+            <option value="Urgent">Urgent</option>
+          </select>
+
+          <select id="filterCategory" class="form-control filter-select">
+            <option value="all">All Categories</option>
+          </select>
+
+          <select id="filterDueDate" class="form-control filter-select">
+            <option value="">All Due Dates</option>
+            <option value="today">Due Today</option>
+            <option value="overdue">Overdue</option>
+            <option value="upcoming">Upcoming</option>
+          </select>
+
+          <select id="sortBy" class="form-control filter-select">
+            <option value="newest">Sort: Newest</option>
+            <option value="oldest">Sort: Oldest</option>
+            <option value="due_date">Sort: Due Date</option>
+            <option value="priority">Sort: Priority</option>
+            <option value="alphabetical">Sort: A-Z</option>
+          </select>
+        </div>
+
+        <!-- Tasks Rendering Container -->
+        <div id="tasksContainer" class="tasks-grid-view">
+          <!-- Dynamic tasks rendered here -->
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <!-- Create/Edit Task Modal -->
+  <div class="modal-overlay" id="taskEditorModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="taskEditorModalTitle">Create Task</h3>
+        <button type="button" class="modal-close-btn" onclick="closeModal('taskEditorModal')">&times;</button>
+      </div>
+
+      <form id="taskForm">
+        <div class="modal-body">
+          <div class="form-group">
+            <label class="form-label" for="taskTitle">Task Title <span class="required">*</span></label>
+            <input type="text" id="taskTitle" class="form-control" placeholder="What needs to get done?" required />
+          </div>
+
+          <div class="form-group">
+            <label class="form-label" for="taskDescription">Description</label>
+            <textarea id="taskDescription" class="form-control" placeholder="Provide extra context, links, or notes..."></textarea>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label class="form-label" for="taskStatus">Status</label>
+              <select id="taskStatus" class="form-control">
+                <option value="Todo">Todo</option>
+                <option value="In Progress">In Progress</option>
+                <option value="Completed">Completed</option>
+                <option value="Cancelled">Cancelled</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="taskPriority">Priority</label>
+              <select id="taskPriority" class="form-control">
+                <option value="Low">Low</option>
+                <option value="Medium">Medium</option>
+                <option value="High">High</option>
+                <option value="Urgent">Urgent</option>
+              </select>
+            </div>
+          </div>
+
+          <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+            <div class="form-group">
+              <label class="form-label" for="taskCategory">Category</label>
+              <select id="taskCategory" class="form-control">
+                <option value="">No Category</option>
+              </select>
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="taskDueDate">Due Date</label>
+              <input type="date" id="taskDueDate" class="form-control" />
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Tags</label>
+            <div class="tags-input-container">
+              <div id="tagsChipsContainer" style="display: flex; flex-wrap: wrap; gap: 0.35rem;"></div>
+              <input type="text" id="taskTagInput" placeholder="Add tag and press Enter..." />
+            </div>
+          </div>
+        </div>
+
+        <div class="modal-footer">
+          <button type="button" class="btn btn-secondary" onclick="closeModal('taskEditorModal')">Cancel</button>
+          <button type="submit" class="btn btn-primary">Save Task</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- Task Details Modal -->
+  <div class="modal-overlay" id="taskDetailsModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 id="detailsTitle">Task Details</h3>
+        <button type="button" class="modal-close-btn" onclick="closeModal('taskDetailsModal')">&times;</button>
+      </div>
+
+      <div class="modal-body" style="display: flex; flex-direction: column; gap: 1.25rem;">
+        <div>
+          <label style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-subtle); font-weight: 700;">Description</label>
+          <p id="detailsDescription" style="margin-top: 0.25rem; font-size: 0.95rem; color: var(--text-main); white-space: pre-wrap;"></p>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; border-top: 1px solid var(--border-subtle); padding-top: 1rem;">
+          <div>
+            <label style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-subtle); font-weight: 700;">Status</label>
+            <div id="detailsStatus" style="margin-top: 0.25rem;"></div>
+          </div>
+          <div>
+            <label style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-subtle); font-weight: 700;">Priority</label>
+            <div id="detailsPriority" style="margin-top: 0.25rem;"></div>
+          </div>
+        </div>
+
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; border-top: 1px solid var(--border-subtle); padding-top: 1rem;">
+          <div>
+            <label style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-subtle); font-weight: 700;">Category</label>
+            <div id="detailsCategory" style="margin-top: 0.25rem;"></div>
+          </div>
+          <div>
+            <label style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-subtle); font-weight: 700;">Due Date</label>
+            <div id="detailsDueDate" style="margin-top: 0.25rem; font-size: 0.875rem;"></div>
+          </div>
+        </div>
+
+        <div style="border-top: 1px solid var(--border-subtle); padding-top: 1rem;">
+          <label style="font-size: 0.75rem; text-transform: uppercase; color: var(--text-subtle); font-weight: 700;">Tags</label>
+          <div id="detailsTags" style="display: flex; flex-wrap: wrap; gap: 0.35rem; margin-top: 0.35rem;"></div>
+        </div>
+
+        <div style="border-top: 1px solid var(--border-subtle); padding-top: 1rem; display: flex; justify-content: space-between; font-size: 0.75rem; color: var(--text-muted);">
+          <span>Created: <strong id="detailsCreatedAt">-</strong></span>
+          <span>Completed: <strong id="detailsCompletedAt">-</strong></span>
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" onclick="closeModal('taskDetailsModal')">Close</button>
+        <button type="button" id="detailsEditBtn" class="btn btn-primary">Edit Task</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="/js/utils.js"></script>
+  <script src="/js/auth.js"></script>
+  <script src="/js/api.js"></script>
+  <script src="/js/tasks.js"></script>
+</body>
+</html>

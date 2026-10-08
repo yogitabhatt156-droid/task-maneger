@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign Up — TaskFlow</title>
+  <meta name="description" content="Create a new TaskFlow account to streamline tasks and boost team productivity.">
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/dashboard.css">
+  <link rel="stylesheet" href="/css/responsive.css">
+  <style>
+    .auth-wrapper {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem 1rem;
+      background: var(--bg-app);
+    }
+    .auth-card {
+      width: 100%;
+      max-width: 440px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-xl);
+      padding: 2.25rem 2rem;
+      box-shadow: var(--shadow-xl);
+    }
+    .auth-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="auth-wrapper">
+    <div style="position: absolute; top: 1.5rem; right: 1.5rem;">
+      <button id="themeToggleBtn" class="theme-toggle-btn" title="Toggle Theme" aria-label="Toggle Theme"></button>
+    </div>
+
+    <div class="auth-card">
+      <div class="auth-header">
+        <div style="display: inline-flex; align-items: center; gap: 0.65rem; margin-bottom: 1rem;">
+          <div class="brand-icon">TF</div>
+          <span class="brand-name" style="font-size: 1.25rem;">TaskFlow</span>
+        </div>
+        <h2 style="font-size: 1.35rem; margin-bottom: 0.35rem;">Create Your Account</h2>
+        <p style="font-size: 0.875rem;">Start managing tasks with high-security Supabase storage</p>
+      </div>
+
+      <form id="registerForm">
+        <div class="form-group">
+          <label class="form-label" for="regFullName">Full Name <span class="required">*</span></label>
+          <input
+            type="text"
+            id="regFullName"
+            class="form-control"
+            placeholder="Alex Morgan"
+            required
+            autocomplete="name"
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="regEmail">Email Address <span class="required">*</span></label>
+          <input
+            type="email"
+            id="regEmail"
+            class="form-control"
+            placeholder="alex@company.com"
+            required
+            autocomplete="email"
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="regPassword">Password <span class="required">*</span></label>
+          <input
+            type="password"
+            id="regPassword"
+            class="form-control"
+            placeholder="Minimum 6 characters"
+            required
+            minlength="6"
+            autocomplete="new-password"
+          />
+        </div>
+
+        <div class="form-group">
+          <label class="form-label" for="regConfirmPassword">Confirm Password <span class="required">*</span></label>
+          <input
+            type="password"
+            id="regConfirmPassword"
+            class="form-control"
+            placeholder="Confirm password"
+            required
+            minlength="6"
+            autocomplete="new-password"
+          />
+        </div>
+
+        <button type="submit" id="submitRegBtn" class="btn btn-primary btn-lg" style="width: 100%; margin-top: 0.5rem;">
+          Create Free Account
+        </button>
+      </form>
+
+      <div style="text-align: center; margin-top: 1.75rem; font-size: 0.875rem; color: var(--text-muted);">
+        Already have an account? <a href="/login.html" style="font-weight: 600;">Sign in</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="/js/utils.js"></script>
+  <script src="/js/auth.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      await redirectIfAuthenticated();
+
+      const form = document.getElementById('registerForm');
+      const submitBtn = document.getElementById('submitRegBtn');
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const fullName = document.getElementById('regFullName').value.trim();
+        const email = document.getElementById('regEmail').value.trim();
+        const password = document.getElementById('regPassword').value;
+        const confirmPassword = document.getElementById('regConfirmPassword').value;
+
+        if (!fullName || !email || !password) {
+          showToast('Please fill out all required fields', 'warning');
+          return;
+        }
+
+        if (password !== confirmPassword) {
+          showToast('Passwords do not match', 'error');
+          return;
+        }
+
+        if (password.length < 6) {
+          showToast('Password must be at least 6 characters long', 'warning');
+          return;
+        }
+
+        submitBtn.disabled = true;
+        submitBtn.innerText = 'Creating account...';
+
+        try {
+          const res = await signUp(email, password, fullName);
+          showToast('✓ Account created successfully!', 'success');
+          setTimeout(() => {
+            window.location.href = '/dashboard.html';
+          }, 500);
+        } catch (err) {
+          showToast(err.message || 'Unable to register', 'error');
+          submitBtn.disabled = false;
+          submitBtn.innerText = 'Create Free Account';
+        }
+      });
+    });
+  </script>
+</body>
+</html>

@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign In — TaskFlow</title>
+  <meta name="description" content="Sign in to your TaskFlow account to manage your tasks and productivity.">
+  <link rel="stylesheet" href="/css/style.css">
+  <link rel="stylesheet" href="/css/dashboard.css">
+  <link rel="stylesheet" href="/css/responsive.css">
+  <style>
+    .auth-wrapper {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      padding: 2rem 1rem;
+      background: var(--bg-app);
+    }
+    .auth-card {
+      width: 100%;
+      max-width: 420px;
+      background: var(--bg-surface);
+      border: 1px solid var(--border-subtle);
+      border-radius: var(--radius-xl);
+      padding: 2.25rem 2rem;
+      box-shadow: var(--shadow-xl);
+    }
+    .auth-header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .auth-divider {
+      display: flex;
+      align-items: center;
+      margin: 1.5rem 0;
+      color: var(--text-subtle);
+      font-size: 0.75rem;
+      text-transform: uppercase;
+      font-weight: 700;
+    }
+    .auth-divider::before,
+    .auth-divider::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--border-subtle);
+    }
+    .auth-divider span {
+      padding: 0 0.75rem;
+    }
+  </style>
+</head>
+<body>
+  <div class="auth-wrapper">
+    <div style="position: absolute; top: 1.5rem; right: 1.5rem;">
+      <button id="themeToggleBtn" class="theme-toggle-btn" title="Toggle Theme" aria-label="Toggle Theme"></button>
+    </div>
+
+    <div class="auth-card">
+      <div class="auth-header">
+        <div style="display: inline-flex; align-items: center; gap: 0.65rem; margin-bottom: 1rem;">
+          <div class="brand-icon">TF</div>
+          <span class="brand-name" style="font-size: 1.25rem;">TaskFlow</span>
+        </div>
+        <h2 style="font-size: 1.35rem; margin-bottom: 0.35rem;">Welcome Back</h2>
+        <p style="font-size: 0.875rem;">Enter your credentials to access your workspace</p>
+      </div>
+
+      <form id="loginForm">
+        <div class="form-group">
+          <label class="form-label" for="loginEmail">Email Address <span class="required">*</span></label>
+          <input
+            type="email"
+            id="loginEmail"
+            class="form-control"
+            placeholder="alex@company.com"
+            required
+            autocomplete="email"
+          />
+        </div>
+
+        <div class="form-group">
+          <div style="display: flex; justify-content: space-between; align-items: center;">
+            <label class="form-label" for="loginPassword">Password <span class="required">*</span></label>
+            <a href="/reset-password.html" style="font-size: 0.75rem;">Forgot Password?</a>
+          </div>
+          <input
+            type="password"
+            id="loginPassword"
+            class="form-control"
+            placeholder="••••••••"
+            required
+            autocomplete="current-password"
+          />
+        </div>
+
+        <button type="submit" id="submitLoginBtn" class="btn btn-primary btn-lg" style="width: 100%; margin-top: 0.5rem;">
+          Sign In to Account
+        </button>
+      </form>
+
+      <div class="auth-divider">
+        <span>Instant Preview</span>
+      </div>
+
+      <button type="button" id="demoLoginBtn" class="btn btn-secondary" style="width: 100%;">
+        ⚡ Explore in Demo Workspace
+      </button>
+
+      <div style="text-align: center; margin-top: 1.75rem; font-size: 0.875rem; color: var(--text-muted);">
+        Don't have an account? <a href="/register.html" style="font-weight: 600;">Sign up</a>
+      </div>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="/js/utils.js"></script>
+  <script src="/js/auth.js"></script>
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      await redirectIfAuthenticated();
+
+      const form = document.getElementById('loginForm');
+      const submitBtn = document.getElementById('submitLoginBtn');
+      const demoBtn = document.getElementById('demoLoginBtn');
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        const email = document.getElementById('loginEmail').value.trim();
+        const password = document.getElementById('loginPassword').value;
+
+        if (!email || !password) {
+          showToast('Please enter both email and password', 'warning');
+          return;
+        }
+
+        submitBtn.disabled = true;
+        submitBtn.innerText = 'Signing in...';
+
+        try {
+          await signIn(email, password);
+          showToast('✓ Signed in successfully!', 'success');
+          setTimeout(() => {
+            window.location.href = '/dashboard.html';
+          }, 400);
+        } catch (err) {
+          showToast(err.message || 'Invalid credentials', 'error');
+          submitBtn.disabled = false;
+          submitBtn.innerText = 'Sign In to Account';
+        }
+      });
+
+      demoBtn.addEventListener('click', async () => {
+        demoBtn.disabled = true;
+        await signInDemo();
+        showToast('✓ Welcome to Demo Workspace!', 'success');
+        setTimeout(() => {
+          window.location.href = '/dashboard.html';
+        }, 300);
+      });
+    });
+  </script>
+</body>
+</html>
